@@ -1,5 +1,5 @@
 """Server worker"""
-from examples.rabbitmq_print_response.responsecommand import ResponseCommand
+from examples.rabbitmq_print_response_by_command.responsecommand import ResponseCommand
 from restfulcomm.configurations.rabbitmqserverconfig import \
     RabbitMqServerConfig
 from restfulcomm.providers.serverprovider import ServerProvider

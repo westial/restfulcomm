@@ -1,6 +1,6 @@
 # RabbitMQ server prints the request by command #
 
-Example injecting a customized ServerCommand object that prints the sent
+Example injecting a customized ServerCommand object which prints the sent
 message on the server side.
 
 ## Usage ##

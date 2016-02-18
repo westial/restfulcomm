@@ -1,10 +1,10 @@
 """Server worker"""
-from examples.rabbitmq_print_request_by_command.printcommand import PrintCommand
+from examples.rabbitmq_to_json_response.convertjsontoresponsecommand import \
+    ConvertJsonToResponseCommand
 from restfulcomm.configurations.rabbitmqserverconfig import \
     RabbitMqServerConfig
 from restfulcomm.providers.serverprovider import ServerProvider
 from examples.examplesettings.rabbitmq import *
-
 
 configuration = RabbitMqServerConfig(
         rmq_user=RABBITMQ_USER,
@@ -16,4 +16,8 @@ configuration = RabbitMqServerConfig(
         rmq_exchange=RABBITMQ_EXCHANGE
 )
 
-ServerProvider('rabbitmq', PrintCommand, configuration).server.listen()
+ServerProvider(
+        'rabbitmq',
+        ConvertJsonToResponseCommand,
+        configuration
+).server.listen()

@@ -1,7 +1,7 @@
-# RabbitMQ client prints the server response by command #
+# RabbitMQ client response converted to json response #
 
-Example injecting a customized ServerCommand object which prints the received
-response message on the client side.
+Example injecting a customized ServerCommand object which creates a formatted
+json response as expected and the client prints the result.
 
 ## Usage ##
 
