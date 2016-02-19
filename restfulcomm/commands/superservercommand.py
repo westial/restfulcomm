@@ -4,8 +4,10 @@ action to do with the received data.
 """
 from abc import ABCMeta, abstractmethod
 
+from restfulcomm.commands.superbasecommand import BaseCommand
 
-class ServerCommand(metaclass=ABCMeta):
+
+class ServerCommand(BaseCommand, metaclass=ABCMeta):
 
     @abstractmethod
     def __init__(self, raw_content):

@@ -1,17 +1,18 @@
-"""Given a json formatted plain text content return a well formed http
-response"""
-from restfulcomm.commands.superservercommand import ServerCommand
+"""Given a json formatted plain text content provide a werkzeug http response"""
+from restfulcomm.services.superbaseservice import BaseService
 from restfulcomm.http.jsonresponse import JsonResponse
 from werkzeug.wrappers import Response
 
 
-class JsonToHttpResponseCommand(ServerCommand):
-    def __init__(self, raw_content):
-        super().__init__(raw_content)
-        self._content = JsonResponse.factory(raw_content)
+class JsonToHttpResponseService(BaseService):
 
-    def execute(self):
-        response = self.factory(self._content)
+    def run(self, plain_json):
+        """
+        :param plain_json: str
+        :return: Response
+        """
+        json_response = JsonResponse.factory(plain_json)
+        response = self.factory(json_response)
         return response
 
     @classmethod
@@ -26,7 +27,8 @@ class JsonToHttpResponseCommand(ServerCommand):
         """
         response = Response(
                 response=json_response.body,
-                status=json_response.status
+                status=json_response.status,
+                content_type='application/xml'
         )
 
         if json_response.headers:
