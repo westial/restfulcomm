@@ -1,15 +1,23 @@
+# -*- coding: utf-8 -*-
 """RabbitMQ CommServer"""
 import json
 
 import pika
+from restfulcomm.http.jsonrequest import JsonRequest
 from restfulcomm.servers.superserver import CommServer
+from werkzeug.routing import Map, Rule
 
 
 class RabbitMqCommServer(CommServer):
     """CommServer for RabbitMQ server"""
 
-    def __init__(self, command_class, configuration):
-        super().__init__(command_class, configuration)
+    def __init__(self, server_resources, configuration):
+        super().__init__(server_resources, configuration)
+
+        self._url_map = Map()
+        self._endpoints = dict()
+
+        self._create_rules()
 
         credentials = pika.PlainCredentials(
                 self._configuration.value('user'),
@@ -33,29 +41,93 @@ class RabbitMqCommServer(CommServer):
                 queue=self._configuration.value('queue')
         )
 
+    @classmethod
+    def __has_data_fields(cls, method):
+        """Returns true if the given method requires data fields
+
+        Args:
+            method: str
+
+        Return:
+            bool
+        """
+        if method.upper() in ['POST', 'PUT']:
+            return True
+
+        return False
+
+    def _dispatch_request(self, body):
+        """Dispatches request and returns the response
+
+        Args:
+            body: str
+
+        Return:
+            JsonResponse
+        """
+        json_request = JsonRequest.factory(content=body)
+        router = self._url_map.bind(
+                server_name='',
+                path_info=json_request.resource
+        )
+        endpoint_name, values = router.match()
+        endpoint = self._endpoints[endpoint_name]
+
+        if self.__has_data_fields(json_request.method):
+            json_response = getattr(
+                    endpoint,
+                    json_request.method
+            )(json_request.data, **values)
+
+        else:
+            json_response = getattr(
+                    endpoint,
+                    json_request.method
+            )(**values)
+
+        return json_response
+
+    def _create_rules(self):
+        while self._resources:
+            resource = self._resources.pop(0)
+            endpoint_name = resource.endpoint_class.__name__
+            self._endpoints[endpoint_name] = resource.endpoint_class
+            self._url_map.add(
+                    Rule(resource.api_route, endpoint=endpoint_name)
+            )
+
     def listen(self):
         self._channel.start_consuming()
+
+    def stop(self):
+        self._channel.cancel()
+
+    def purge(self):
+        self._channel.queue_purge(self._configuration.value('queue'))
+
+    def reset(self):
+        self._channel.queue_purge(self._configuration.value('queue'))
+        self._channel.cancel()
+        self._channel.queue_delete(self._configuration.value('queue'))
 
     def on_request(self, ch, method, properties, body):
         """Callback function launched when client catch a job
 
-        :param ch: object
-        :param method: object
-        :param properties: (not used here)
-        :param body: str
-        :return: void
+        Args:
+            ch: object
+            method: object
+            properties: (not used here)
+            body: str
         """
-        resource = self._command_class(raw_content=body)
-        raw_response = resource.execute()
+        json_response = self._dispatch_request(body)
 
-        if raw_response:
-            response = json.dumps(raw_response)
+        if json_response:
             ch.basic_publish(exchange=self._configuration.value('exchange'),
                              routing_key=properties.reply_to,
                              properties=pika.BasicProperties(
                                      correlation_id=properties.correlation_id
                              ),
-                             body=response)
+                             body=json_response.to_json())
 
         ch.basic_ack(delivery_tag=method.delivery_tag)
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Super class for server/client configuration"""
 from abc import ABCMeta, abstractmethod
 

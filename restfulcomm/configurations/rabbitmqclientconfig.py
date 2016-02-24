@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """RabbitMQ Client Config class"""
 from restfulcomm.configurations.superconfiguration import Config
 

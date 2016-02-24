@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Super client class"""
 from abc import ABCMeta, abstractmethod
 
@@ -20,13 +21,13 @@ class CommClient(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def request(self, method_, resource_, data_, headers_):
+    def do_request(self, method, resource, headers, data):
         """Request the components to server and return the response.
 
         Args:
-            method_: str GET | POST | PUT | DELETE
-            resource_: str
-            data_: dict
-            headers_: dict
+            method: str GET | POST | PUT | DELETE
+            resource: str
+            headers: dict
+            data: dict
         """
         pass

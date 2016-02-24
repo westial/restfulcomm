@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """RabbitMQ client"""
 import json
 import time
@@ -19,7 +20,7 @@ class RabbitMqCommClient(CommClient):
         self._pika_props = None
         self._message = None
         self._start_time = None
-        self._timeout_sec = 10
+        self._timeout_sec = 30
 
         credentials = pika.PlainCredentials(
                 self._configuration.value('user'),
@@ -35,14 +36,14 @@ class RabbitMqCommClient(CommClient):
 
         self._channel = self._connection.channel()
 
-    def request(self, method_, resource_, data_, headers_):
+    def do_request(self, method, resource, headers, data=''):
         self._corr_id = str(uuid.uuid4())
 
         self._message = {
-            'method': method_,
-            'resource': resource_,
-            'data': data_,
-            'headers': headers_,
+            'method': method,
+            'resource': resource,
+            'data': data,
+            'headers': headers,
         }
 
         result = self._channel.queue_declare(exclusive=True)

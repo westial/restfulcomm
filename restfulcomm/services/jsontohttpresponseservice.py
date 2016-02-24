@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Given a json formatted plain text content provide a werkzeug http response"""
 from restfulcomm.services.superbaseservice import BaseService
 from restfulcomm.http.jsonresponse import JsonResponse

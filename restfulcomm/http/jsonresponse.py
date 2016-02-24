@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
 """Value object product of a json format response got from a server as plain
 text.
-
-Also provides the factory for itself"""
+"""
 import json
 
+from restfulcomm.http.superjson import BaseJson
 
-class JsonResponse(object):
+
+class JsonResponse(BaseJson):
 
     def __init__(self):
         self._status = None
@@ -43,18 +45,6 @@ class JsonResponse(object):
     def headers(self, value):
         self._headers = value
 
-    def to_dict(self):
-        """Return the object attributes dict"""
-        attributes = dict()
-        for key in self.__dir__():
-            attributes[key] = getattr(self, key)
-        return attributes
-
-    def to_json(self):
-        """Return the object on json formatted plain text"""
-        attributes = self.to_dict()
-        return json.dumps(attributes)
-
     @classmethod
     def factory(cls, content):
         """Given a plain text json formatted content sets the attributes
@@ -65,6 +55,9 @@ class JsonResponse(object):
         Return:
             JsonResponse object
         """
+        if type(content) == bytes:
+            content = content.decode('utf-8')
+
         json_map = json.loads(content)
 
         json_response = JsonResponse()
