@@ -46,7 +46,7 @@ class JsonResponse(BaseJson):
         self._headers = value
 
     @classmethod
-    def factory(cls, content):
+    def plain_factory(cls, content):
         """Given a plain text json formatted content sets the attributes
 
         Args:
@@ -73,5 +73,22 @@ class JsonResponse(BaseJson):
             json_response.headers = json_map['headers']
         else:
             json_response.headers = None
+
+        return json_response
+
+    @classmethod
+    def http_factory(cls, response):
+        """Return an Response by the given JsonResponse object
+
+        Args:
+            response: Response object
+
+        Return:
+            JsonResponse
+        """
+        json_response = JsonResponse()
+        json_response.body = response.data
+        json_response.status = response.status_code
+        json_response.headers = response.headers.to_list()
 
         return json_response

@@ -13,7 +13,8 @@ class RabbitMqClientConfig(Config):
             rmq_vhost,
             rmq_queue,
             rmq_delivery,
-            rmq_exchange):
+            rmq_exchange,
+            rmq_timeout):
 
         super().__init__(
             rmq_user,
@@ -22,7 +23,8 @@ class RabbitMqClientConfig(Config):
             rmq_vhost,
             rmq_queue,
             rmq_delivery,
-            rmq_exchange
+            rmq_exchange,
+            rmq_timeout
         )
 
         self._settings['user'] = rmq_user
@@ -32,3 +34,4 @@ class RabbitMqClientConfig(Config):
         self._settings['queue'] = rmq_queue
         self._settings['delivery'] = rmq_delivery
         self._settings['exchange'] = rmq_exchange
+        self._settings['timeout'] = rmq_timeout

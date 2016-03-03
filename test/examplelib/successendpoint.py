@@ -1,6 +1,7 @@
+# -*- coding: utf-8 -*-
 """Example command for parameters printing"""
-from restfulcomm.http.jsonresponse import JsonResponse
 from restfulcomm.http.superendpoint import Endpoint
+from werkzeug.wrappers import Response
 
 
 class SuccessEndpoint(Endpoint):
@@ -10,16 +11,16 @@ class SuccessEndpoint(Endpoint):
         pass
 
     @classmethod
-    def GET(cls, content):
-        json_response = JsonResponse()
-        json_response.status = 200
-        json_response.body = content
-        return json_response
+    def GET(cls, data, content):
+        return Response(
+            response=content,
+            content_type='text/plain; charset=utf-8'
+        )
 
     @classmethod
     def POST(cls, data, **kwargs):
         pass
 
     @classmethod
-    def DELETE(cls, **kwargs):
+    def DELETE(cls, data, **kwargs):
         pass

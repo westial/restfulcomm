@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
-"""Given a werkzeug http response provide json formatted plain text"""
+"""Given a werkzeug http response provide json formatted response result"""
 from restfulcomm.services.superbaseservice import BaseService
 from restfulcomm.http.jsonresponse import JsonResponse
 
 
 class HttpResponseToJsonService(BaseService):
 
-    def run(self, response):
+    @classmethod
+    def run(cls, response):
         """
         :param response: Response
-        :return: str
+        :return: JsonResponse
         """
-        json_response = self.factory(response)
-        return json_response.to_json()
+        json_response = cls.factory(response)
+        return json_response
 
     @classmethod
     def factory(cls, response):
@@ -25,7 +26,7 @@ class HttpResponseToJsonService(BaseService):
             JsonResponse
         """
         json_response = JsonResponse()
-        json_response.body = response.data
+        json_response.body = response.data.decode('utf-8')
         json_response.status = response.status_code
         json_response.headers = response.headers.to_list()
 

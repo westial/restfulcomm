@@ -21,13 +21,10 @@ class CommClient(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def do_request(self, method, resource, headers, data):
-        """Request the components to server and return the response.
+    def do_request(self, **kwargs):
+        """Request to server and return the response.
 
-        Args:
-            method: str GET | POST | PUT | DELETE
-            resource: str
-            headers: dict
-            data: dict
+        Keyword args:
+            kwargs: request components
         """
         pass

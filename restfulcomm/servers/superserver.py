@@ -33,3 +33,8 @@ class CommServer(metaclass=ABCMeta):
     def listen(self):
         """Request the given content to server and return the response"""
         pass
+
+    @abstractmethod
+    def stop(self):
+        """Shutdown server"""
+        pass

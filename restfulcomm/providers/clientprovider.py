@@ -18,6 +18,8 @@ class ClientProvider(object):
         """
         if client_type == 'rabbitmq':
             client_class = RabbitMqCommClient
+        elif client_type == 'werkzeug':
+            client_class = WerkzeugCommClient
         else:
             raise TypeError('Unexpected client type')
 

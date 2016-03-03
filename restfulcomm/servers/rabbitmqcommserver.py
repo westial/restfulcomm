@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """RabbitMQ CommServer"""
-import json
 
 import pika
 from restfulcomm.http.jsonrequest import JsonRequest
 from restfulcomm.servers.superserver import CommServer
+from restfulcomm.services.httpresponsetojsonservice import \
+    HttpResponseToJsonService
 from werkzeug.routing import Map, Rule
 
 
@@ -41,21 +42,6 @@ class RabbitMqCommServer(CommServer):
                 queue=self._configuration.value('queue')
         )
 
-    @classmethod
-    def __has_data_fields(cls, method):
-        """Returns true if the given method requires data fields
-
-        Args:
-            method: str
-
-        Return:
-            bool
-        """
-        if method.upper() in ['POST', 'PUT']:
-            return True
-
-        return False
-
     def _dispatch_request(self, body):
         """Dispatches request and returns the response
 
@@ -63,9 +49,9 @@ class RabbitMqCommServer(CommServer):
             body: str
 
         Return:
-            JsonResponse
+            HTTP Response
         """
-        json_request = JsonRequest.factory(content=body)
+        json_request = JsonRequest.plain_factory(content=body)
         router = self._url_map.bind(
                 server_name='',
                 path_info=json_request.resource
@@ -73,19 +59,12 @@ class RabbitMqCommServer(CommServer):
         endpoint_name, values = router.match()
         endpoint = self._endpoints[endpoint_name]
 
-        if self.__has_data_fields(json_request.method):
-            json_response = getattr(
-                    endpoint,
-                    json_request.method
-            )(json_request.data, **values)
+        http_response = getattr(
+                endpoint,
+                json_request.method
+        )(json_request.data, **values)
 
-        else:
-            json_response = getattr(
-                    endpoint,
-                    json_request.method
-            )(**values)
-
-        return json_response
+        return http_response
 
     def _create_rules(self):
         while self._resources:
@@ -119,7 +98,9 @@ class RabbitMqCommServer(CommServer):
             properties: (not used here)
             body: str
         """
-        json_response = self._dispatch_request(body)
+        http_response = self._dispatch_request(body)
+
+        json_response = HttpResponseToJsonService.run(response=http_response)
 
         if json_response:
             ch.basic_publish(exchange=self._configuration.value('exchange'),

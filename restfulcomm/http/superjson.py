@@ -21,7 +21,10 @@ class BaseJson(metaclass=ABCMeta):
         """Return the object attributes dict"""
         attributes = dict()
         for key in self.__dir__():
-            attributes[key] = getattr(self, key)
+            value = getattr(self, key)
+            if type(value) == bytes:
+                value = str(value)
+            attributes[key] = value
         return attributes
 
     def to_json(self):
@@ -31,8 +34,18 @@ class BaseJson(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def factory(cls, **kwargs):
-        """Creates an instance for the given content
+    def plain_factory(cls, **kwargs):
+        """Creates an instance for the given plain text content
+
+        Keyword args:
+            kwargs: mixed
+        """
+        pass
+
+    @classmethod
+    @abstractmethod
+    def http_factory(cls, **kwargs):
+        """Creates an instance for the given http object content
 
         Keyword args:
             kwargs: mixed

@@ -27,7 +27,7 @@ class JsonRequest(BaseJson):
         ]
 
     @classmethod
-    def factory(cls, content):
+    def plain_factory(cls, content):
         """Given a plain text json formatted content sets the attributes
 
         Args:
@@ -53,3 +53,8 @@ class JsonRequest(BaseJson):
             json_request.data = json_map['data']
 
         return json_request
+
+    @classmethod
+    def http_factory(cls, **kwargs):
+        # TODO: when required
+        raise NotImplemented()

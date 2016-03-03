@@ -6,6 +6,7 @@ import uuid
 
 import pika
 from restfulcomm.clients.superclient import CommClient
+from restfulcomm.http.jsonresponse import JsonResponse
 
 
 class RabbitMqCommClient(CommClient):
@@ -20,7 +21,7 @@ class RabbitMqCommClient(CommClient):
         self._pika_props = None
         self._message = None
         self._start_time = None
-        self._timeout_sec = 30
+        self._timeout_sec = self._configuration.value('timeout')
 
         credentials = pika.PlainCredentials(
                 self._configuration.value('user'),
@@ -36,13 +37,14 @@ class RabbitMqCommClient(CommClient):
 
         self._channel = self._connection.channel()
 
-    def do_request(self, method, resource, headers, data=''):
+    def do_request(self, method, resource, headers, data=None, params=None):
         self._corr_id = str(uuid.uuid4())
 
         self._message = {
             'method': method,
             'resource': resource,
             'data': data,
+            'params': params,
             'headers': headers,
         }
 
@@ -58,7 +60,9 @@ class RabbitMqCommClient(CommClient):
                 correlation_id=self._corr_id,
                 content_type='application/json'
         )
-        return self.enqueue(message=self._message)
+        plain_json_response = self.enqueue(message=self._message)
+
+        return JsonResponse.plain_factory(plain_json_response)
 
     def on_response(self, ch, method, properties, body):
         if self._corr_id == properties.correlation_id:

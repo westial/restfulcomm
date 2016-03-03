@@ -8,7 +8,6 @@ import time
 
 from restfulcomm.configurations.rabbitmqclientconfig import RabbitMqClientConfig
 from restfulcomm.configurations.rabbitmqserverconfig import RabbitMqServerConfig
-from restfulcomm.http.jsonresponse import JsonResponse
 from restfulcomm.providers.clientprovider import ClientProvider
 from restfulcomm.providers.serverprovider import ServerProvider
 from restfulcomm.resources.basicserverresource import BasicServerResource
@@ -30,13 +29,11 @@ class TestRabbitMq(unittest.TestCase):
 
             client_provider = self.build_client_provider()
 
-            plain_json_response = client_provider.client.do_request(
+            json_response = client_provider.client.do_request(
                     method='GET',
                     resource='/index/{!s}'.format(message),
                     headers={'a': 'first', 'b': 'second'}
             )
-
-            json_response = JsonResponse().factory(plain_json_response)
 
             self.assertEqual(json_response.status, 200)
             self.assertEqual(json_response.body, message)
@@ -53,7 +50,8 @@ class TestRabbitMq(unittest.TestCase):
                 rmq_vhost=RABBITMQ_VHOST,
                 rmq_queue=RABBITMQ_QUEUE,
                 rmq_delivery=RABBITMQ_DELIVERY_MODE,
-                rmq_exchange=RABBITMQ_EXCHANGE
+                rmq_exchange=RABBITMQ_EXCHANGE,
+                rmq_timeout=RABBITMQ_TIMEOUT,
         )
 
         provider = ClientProvider('rabbitmq', configuration)

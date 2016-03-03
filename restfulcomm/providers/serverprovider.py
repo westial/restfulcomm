@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Entry point for server resources"""
-from restfulcomm.servers.rabbitmqserver import RabbitMqCommServer
+from restfulcomm.servers.rabbitmqcommserver import RabbitMqCommServer
+from restfulcomm.servers.werkzeugcommserver import WerkzeugCommServer
 
 
 class ServerProvider(object):
@@ -19,6 +20,8 @@ class ServerProvider(object):
         """
         if server_type == 'rabbitmq':
             server_class = RabbitMqCommServer
+        elif server_type == 'werkzeug':
+            server_class = WerkzeugCommServer
         else:
             raise TypeError('Unexpected server type')
 

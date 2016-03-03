@@ -8,58 +8,32 @@ class Endpoint(metaclass=ABCMeta):
 
     @classmethod
     @abstractmethod
-    def GET(cls, **kwargs):
+    def GET(cls, *args, **kwargs):
         """GET method request
-
-        Keyword args:
-            kwargs: url parameters
-
-        Return:
-            JsonResponse object
+        :return JsonResponse object
         """
         pass
 
     @classmethod
     @abstractmethod
-    def POST(cls, data, **kwargs):
+    def POST(cls, *args, **kwargs):
         """POST method request
-
-        Args:
-            data: dict data fields
-
-        Keyword args:
-            kwargs: url parameters
-
-        Return:
-            JsonResponse object
+        :return JsonResponse object
         """
         pass
 
     @classmethod
     @abstractmethod
-    def PUT(cls, data, **kwargs):
+    def PUT(cls, *args, **kwargs):
         """PUT method request
-
-        Args:
-            data: dict data fields
-
-        Keyword args:
-            kwargs: url parameters
-
-        Return:
-            JsonResponse object
+        :return JsonResponse object
         """
         pass
 
     @classmethod
     @abstractmethod
-    def DELETE(cls, **kwargs):
+    def DELETE(cls, *args, **kwargs):
         """DELETE method request
-
-        Keyword args:
-            kwargs: url parameters
-
-        Return:
-            JsonResponse object
+        :return JsonResponse object
         """
         pass

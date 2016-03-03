@@ -6,7 +6,8 @@ from abc import ABCMeta, abstractmethod
 
 class BaseService(metaclass=ABCMeta):
 
+    @classmethod
     @abstractmethod
-    def run(self, **kwargs):
+    def run(cls, **kwargs):
         """Start service and return the result"""
         pass
