@@ -28,18 +28,18 @@ class WerkzeugCommServer(CommServer):
             request: Request object
 
         Return:
-            JsonResponse
+            HTTP Response
         """
         router = self._url_map.bind_to_environ(request.environ)
         endpoint_name, values = router.match()
         endpoint = self._endpoints[endpoint_name]
 
-        json_response = getattr(
+        http_response = getattr(
                 endpoint,
                 request.method
         )(request.form, **values)
 
-        return json_response
+        return http_response
 
     def listen(self):
         run_simple(
@@ -54,6 +54,9 @@ class WerkzeugCommServer(CommServer):
         if 'werkzeug.server.shutdown' not in self._environ:
             raise RuntimeError('Not running the development server')
         self._environ['werkzeug.server.shutdown']()
+
+    def reset(self):
+        self.stop()
 
     def _create_rules(self):
         while self._resources:
@@ -70,4 +73,5 @@ class WerkzeugCommServer(CommServer):
         return response(environ, start_response)
 
     def __call__(self, environ, start_response):
+        self._environ = environ
         return self.wsgi_app(environ, start_response)

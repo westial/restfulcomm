@@ -29,7 +29,7 @@ class PlainJsonToHttpResponseService(BaseService):
             Response
         """
         response = Response(
-                response=json_response.body,
+                json_response.body,
                 status=json_response.status
         )
 

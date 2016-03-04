@@ -78,7 +78,7 @@ class JsonResponse(BaseJson):
 
     @classmethod
     def http_factory(cls, response):
-        """Return an Response by the given JsonResponse object
+        """Return a JsonResponse object by the given HTTP Response
 
         Args:
             response: Response object
@@ -87,8 +87,8 @@ class JsonResponse(BaseJson):
             JsonResponse
         """
         json_response = JsonResponse()
-        json_response.body = response.data
+        json_response.body = response.text
         json_response.status = response.status_code
-        json_response.headers = response.headers.to_list()
+        json_response.headers = dict(response.headers)
 
         return json_response

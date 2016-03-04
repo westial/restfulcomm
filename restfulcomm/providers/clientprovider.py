@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Entry point for client resources"""
 from restfulcomm.clients.rabbitmqclient import RabbitMqCommClient
+from restfulcomm.clients.werkzeugclient import WerkzeugCommClient
 
 
 class ClientProvider(object):

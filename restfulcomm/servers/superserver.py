@@ -38,3 +38,8 @@ class CommServer(metaclass=ABCMeta):
     def stop(self):
         """Shutdown server"""
         pass
+
+    @abstractmethod
+    def reset(self):
+        """Clean and shutdown server"""
+        pass

@@ -14,7 +14,7 @@ class SuccessEndpoint(Endpoint):
     def GET(cls, data, content):
         return Response(
             response=content,
-            content_type='text/plain; charset=utf-8'
+            content_type='application/json'
         )
 
     @classmethod
