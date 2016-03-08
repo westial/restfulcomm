@@ -2,12 +2,26 @@
 """Value object product of a json format response got from a server as plain
 text.
 """
+import base64
 import json
 
 from restfulcomm.http.superjson import BaseJson
+from restfulcomm.core.helpers import HttpHelper
 
 
 class JsonResponse(BaseJson):
+
+    def to_dict(self):
+        """Return the object attributes dict. If content type is not plain text
+        encode the body by base64 codec"""
+        attributes = dict()
+        for key in self.__dir__():
+            value = getattr(self, key)
+            if key == 'body' and not HttpHelper.is_plain_content_type(
+                    self.headers['Content-Type']):
+                value = base64.b64encode(value).decode()
+            attributes[key] = value
+        return attributes
 
     def __init__(self):
         self._status = None
@@ -47,7 +61,7 @@ class JsonResponse(BaseJson):
 
     @classmethod
     def plain_factory(cls, content):
-        """Given a plain text json formatted content sets the attributes
+        """Given a plain text json formatted content sets the context attributes
 
         Args:
             content: str json formatted content
@@ -62,17 +76,16 @@ class JsonResponse(BaseJson):
 
         json_response = JsonResponse()
 
+        json_response.headers = json_map['headers']
         json_response.status = json_map['status']
 
         if 'body' in json_map:
-            json_response.body = json_map['body']
+            if HttpHelper.is_plain_content_type(json_response.headers['Content-Type']):
+                json_response.body = json_map['body']
+            else:
+                json_response.body = base64.b64decode(json_map['body'])
         else:
             json_response.body = None
-
-        if 'headers' in json_map:
-            json_response.headers = json_map['headers']
-        else:
-            json_response.headers = None
 
         return json_response
 
@@ -87,8 +100,14 @@ class JsonResponse(BaseJson):
             JsonResponse
         """
         json_response = JsonResponse()
-        json_response.body = response.text
+
+        if HttpHelper.is_plain_content_type(response.headers['Content-type']):
+            json_response.body = response.text
+        else:
+            json_response.body = response.content
+
         json_response.status = response.status_code
         json_response.headers = dict(response.headers)
 
         return json_response
+

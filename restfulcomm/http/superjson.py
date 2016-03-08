@@ -22,8 +22,6 @@ class BaseJson(metaclass=ABCMeta):
         attributes = dict()
         for key in self.__dir__():
             value = getattr(self, key)
-            if type(value) == bytes:
-                value = str(value)
             attributes[key] = value
         return attributes
 

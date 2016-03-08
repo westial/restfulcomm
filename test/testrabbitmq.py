@@ -16,6 +16,9 @@ class TestRabbitMq(SuperTestServer):
     def test_get(self):
         super().test_get()
 
+    def test_get_image(self):
+        super().test_get_image()
+
     @classmethod
     def build_client_provider(cls):
         configuration = RabbitMqClientConfig(
@@ -33,7 +36,7 @@ class TestRabbitMq(SuperTestServer):
 
         return provider
 
-    def _async_server(self, endpoint_class):
+    def _async_server(self, endpoint_class, resource):
         configuration = RabbitMqServerConfig(
                 rmq_user=RABBITMQ_USER,
                 rmq_password=RABBITMQ_PASSWORD,
@@ -46,7 +49,7 @@ class TestRabbitMq(SuperTestServer):
 
         server_resource = BasicServerResource(
             endpoint_class,
-            self.server_url_resource
+            resource
         )
 
         server_provider = ServerProvider(

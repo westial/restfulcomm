@@ -23,7 +23,13 @@ class WerkzeugCommClient(CommClient):
                 self._configuration.value('password')
         )
 
+    @classmethod
+    def validate_request(cls, headers):
+        if 'Content-type' not in headers:
+            raise ValueError('Content type header is mandatory')
+
     def do_request(self, method, resource, headers, data=None, params=None):
+        self.validate_request(headers=headers)
 
         http_response = HttpRequestService.run(
             method=method,

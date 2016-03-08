@@ -28,3 +28,10 @@ class CommClient(metaclass=ABCMeta):
             kwargs: request components
         """
         pass
+
+    @classmethod
+    @abstractmethod
+    def validate_request(cls, **kwargs):
+        pass
+
+

@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Test cases for werkzeug server"""
 import unittest
-from _thread import start_new_thread
 
 import time
 
@@ -19,6 +18,11 @@ class TestWerkzeug(SuperTestServer):
 
     def test_get(self):
         super().test_get()
+        time.sleep(30)
+
+    def test_get_image(self):
+        super().test_get_image()
+        time.sleep(30)
 
     @classmethod
     def build_client_provider(cls):
@@ -35,12 +39,7 @@ class TestWerkzeug(SuperTestServer):
 
         return provider
 
-    def _async_server(self, endpoint_class):
-        """Asynchronous server listening
-
-        Args:
-            endpoint_class: Endpoint class
-        """
+    def _async_server(self, endpoint_class, resource):
         configuration = WerkzeugServerConfig(
             web_user=None,
             web_password=None,
@@ -52,7 +51,7 @@ class TestWerkzeug(SuperTestServer):
 
         server_resource = BasicServerResource(
             endpoint_class,
-            self.server_url_resource
+            resource
         )
 
         server_provider = ServerProvider(

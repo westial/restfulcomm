@@ -37,7 +37,14 @@ class RabbitMqCommClient(CommClient):
 
         self._channel = self._connection.channel()
 
+    @classmethod
+    def validate_request(cls, headers):
+        if 'Content-type' not in headers:
+            raise ValueError('Content type header is mandatory')
+
     def do_request(self, method, resource, headers, data=None, params=None):
+        self.validate_request(headers=headers)
+
         self._corr_id = str(uuid.uuid4())
 
         self._message = {
@@ -58,11 +65,13 @@ class RabbitMqCommClient(CommClient):
                 delivery_mode=self._configuration.value('delivery'),
                 reply_to=self._callback_queue,
                 correlation_id=self._corr_id,
-                content_type='application/json'
+                content_type=self._message['headers']['Content-type']
         )
         plain_json_response = self.enqueue(message=self._message)
 
-        return JsonResponse.plain_factory(plain_json_response)
+        json_response = JsonResponse.plain_factory(plain_json_response)
+
+        return json_response
 
     def on_response(self, ch, method, properties, body):
         if self._corr_id == properties.correlation_id:
@@ -84,7 +93,7 @@ class RabbitMqCommClient(CommClient):
                         reply_to=self._callback_queue,
                         correlation_id=self._corr_id,
                 ),
-                body=str(data)
+                body=data
         )
 
         while self.response is None \
