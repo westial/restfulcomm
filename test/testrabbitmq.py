@@ -36,7 +36,8 @@ class TestRabbitMq(SuperTestServer):
 
         return provider
 
-    def _async_server(self, endpoint_class, resource):
+    @classmethod
+    def _async_server(cls, endpoints_context):
         configuration = RabbitMqServerConfig(
                 rmq_user=RABBITMQ_USER,
                 rmq_password=RABBITMQ_PASSWORD,
@@ -47,19 +48,16 @@ class TestRabbitMq(SuperTestServer):
                 rmq_exchange=RABBITMQ_EXCHANGE
         )
 
-        server_resource = BasicServerResource(
-            endpoint_class,
-            resource
-        )
+        server_resources = cls.endpoints_to_server_resources(endpoints_context)
 
         server_provider = ServerProvider(
                 'rabbitmq',
-                [server_resource],
+                server_resources,
                 configuration
         )
 
-        self._server = server_provider.server
-        self._server.listen()
+        cls.set_server(server_provider.server)
+        cls._server().listen()
 
 
 if __name__ == '__main__':

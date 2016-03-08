@@ -3,13 +3,10 @@
 """Test cases for werkzeug server"""
 import unittest
 
-import time
-
 from restfulcomm.configurations.werkzeugclientconfig import WerkzeugClientConfig
 from restfulcomm.configurations.werkzeugserverconfig import WerkzeugServerConfig
 from restfulcomm.providers.clientprovider import ClientProvider
 from restfulcomm.providers.serverprovider import ServerProvider
-from restfulcomm.resources.basicserverresource import BasicServerResource
 from test.examplesettings.werkzeug import *
 from test.supertestserver import SuperTestServer
 
@@ -18,11 +15,9 @@ class TestWerkzeug(SuperTestServer):
 
     def test_get(self):
         super().test_get()
-        time.sleep(30)
 
     def test_get_image(self):
         super().test_get_image()
-        time.sleep(30)
 
     @classmethod
     def build_client_provider(cls):
@@ -39,7 +34,8 @@ class TestWerkzeug(SuperTestServer):
 
         return provider
 
-    def _async_server(self, endpoint_class, resource):
+    @classmethod
+    def _async_server(cls, endpoints_context):
         configuration = WerkzeugServerConfig(
             web_user=None,
             web_password=None,
@@ -49,19 +45,16 @@ class TestWerkzeug(SuperTestServer):
             use_reloader=USE_RELOADER
         )
 
-        server_resource = BasicServerResource(
-            endpoint_class,
-            resource
-        )
+        server_resources = cls.endpoints_to_server_resources(endpoints_context)
 
         server_provider = ServerProvider(
                 'werkzeug',
-                [server_resource],
+                server_resources,
                 configuration
         )
 
-        self._server = server_provider.server
-        self._server.listen()
+        cls.set_server(server_provider.server)
+        cls._server().listen()
 
 
 if __name__ == '__main__':
