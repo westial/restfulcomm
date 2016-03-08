@@ -65,7 +65,7 @@ class RabbitMqCommClient(CommClient):
                 delivery_mode=self._configuration.value('delivery'),
                 reply_to=self._callback_queue,
                 correlation_id=self._corr_id,
-                content_type=self._message['headers']['Content-type']
+                content_type='application/json'
         )
         plain_json_response = self.enqueue(message=self._message)
 
