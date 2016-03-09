@@ -6,12 +6,14 @@ from restfulcomm.configurations.rabbitmqclientconfig import RabbitMqClientConfig
 from restfulcomm.configurations.rabbitmqserverconfig import RabbitMqServerConfig
 from restfulcomm.providers.clientprovider import ClientProvider
 from restfulcomm.providers.serverprovider import ServerProvider
-from restfulcomm.resources.basicserverresource import BasicServerResource
 from test.examplesettings.rabbitmq import *
 from test.supertestserver import SuperTestServer
 
 
 class TestRabbitMq(SuperTestServer):
+
+    def test_get_not_found(self):
+        super().test_get_not_found()
 
     def test_get(self):
         super().test_get()

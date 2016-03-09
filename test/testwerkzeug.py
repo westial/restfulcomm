@@ -13,6 +13,9 @@ from test.supertestserver import SuperTestServer
 
 class TestWerkzeug(SuperTestServer):
 
+    def test_get_not_found(self):
+        super().test_get_not_found()
+
     def test_get(self):
         super().test_get()
 

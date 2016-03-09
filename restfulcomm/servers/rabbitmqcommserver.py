@@ -6,7 +6,9 @@ from restfulcomm.http.jsonrequest import JsonRequest
 from restfulcomm.servers.superserver import CommServer
 from restfulcomm.services.httpresponsetojsonservice import \
     HttpResponseToJsonService
+from werkzeug.exceptions import NotFound
 from werkzeug.routing import Map, Rule
+from werkzeug.wrappers import Response
 
 
 class RabbitMqCommServer(CommServer):
@@ -56,7 +58,13 @@ class RabbitMqCommServer(CommServer):
                 server_name='',
                 path_info=json_request.resource
         )
-        endpoint_name, values = router.match()
+
+        try:
+            endpoint_name, values = router.match()
+
+        except NotFound:
+            return Response('Not Found', status=404)
+
         endpoint = self._endpoints[endpoint_name]
 
         http_response = getattr(

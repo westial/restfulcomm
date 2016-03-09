@@ -4,7 +4,8 @@ setting up by the constructor parameters.
 """
 
 from restfulcomm.servers.superserver import CommServer
-from werkzeug.wrappers import Request
+from werkzeug.exceptions import NotFound
+from werkzeug.wrappers import Request, Response
 from werkzeug.routing import Map, Rule
 from werkzeug.serving import run_simple
 
@@ -31,7 +32,13 @@ class WerkzeugCommServer(CommServer):
             HTTP Response
         """
         router = self._url_map.bind_to_environ(request.environ)
-        endpoint_name, values = router.match()
+
+        try:
+            endpoint_name, values = router.match()
+
+        except NotFound:
+            return Response('Not Found', status=404)
+
         endpoint = self._endpoints[endpoint_name]
 
         http_response = getattr(

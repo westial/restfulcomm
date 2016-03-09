@@ -65,6 +65,20 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         self.assertEqual(json_response.status, 200)
         self.assertEqual(json_response.body, message)
 
+    def test_get_not_found(self):
+        """Client requests a route and server returns a not found status code"""
+        self.headers_for_get.update({'Content-type': 'text/plain'})
+
+        client_provider = self.build_client_provider()
+
+        json_response = client_provider.client.do_request(
+                method='GET',
+                resource='/path/to/missing/page',
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.status, 404)
+
     def test_get_image(self):
         """Client requests the properly route and server returns a binary image
         file"""
