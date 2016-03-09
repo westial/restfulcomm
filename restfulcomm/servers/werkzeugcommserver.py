@@ -5,7 +5,7 @@ setting up by the constructor parameters.
 
 from restfulcomm.servers.superserver import CommServer
 from werkzeug.exceptions import NotFound
-from werkzeug.wrappers import Request, Response
+from werkzeug.wrappers import Request
 from werkzeug.routing import Map, Rule
 from werkzeug.serving import run_simple
 
@@ -37,7 +37,7 @@ class WerkzeugCommServer(CommServer):
             endpoint_name, values = router.match()
 
         except NotFound:
-            return Response('Not Found', status=404)
+            return self.not_found()
 
         endpoint = self._endpoints[endpoint_name]
 

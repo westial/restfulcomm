@@ -8,7 +8,6 @@ from restfulcomm.services.httpresponsetojsonservice import \
     HttpResponseToJsonService
 from werkzeug.exceptions import NotFound
 from werkzeug.routing import Map, Rule
-from werkzeug.wrappers import Response
 
 
 class RabbitMqCommServer(CommServer):
@@ -63,7 +62,7 @@ class RabbitMqCommServer(CommServer):
             endpoint_name, values = router.match()
 
         except NotFound:
-            return Response('Not Found', status=404)
+            return self.not_found()
 
         endpoint = self._endpoints[endpoint_name]
 

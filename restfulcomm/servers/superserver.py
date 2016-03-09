@@ -2,6 +2,8 @@
 """Super server class"""
 from abc import ABCMeta, abstractmethod
 
+from werkzeug.wrappers import Response
+
 
 class CommServer(metaclass=ABCMeta):
 
@@ -43,3 +45,12 @@ class CommServer(metaclass=ABCMeta):
     def reset(self):
         """Clean and shutdown server"""
         pass
+
+    # Predefined responses. They can be overwritten by implementation
+
+    @classmethod
+    def not_found(cls):
+        """Returns a not found http response
+        :return: HTTP Response
+        """
+        return Response('Not Found', status=404)
