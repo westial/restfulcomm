@@ -2,6 +2,7 @@
 """RabbitMQ CommServer"""
 
 import pika
+from requests.models import Request
 from restfulcomm.http.jsonrequest import JsonRequest
 from restfulcomm.servers.superserver import CommServer
 from restfulcomm.services.httpresponsetojsonservice import \
@@ -53,6 +54,7 @@ class RabbitMqCommServer(CommServer):
             HTTP Response
         """
         json_request = JsonRequest.plain_factory(content=body)
+
         router = self._url_map.bind(
                 server_name='',
                 path_info=json_request.resource
@@ -66,10 +68,14 @@ class RabbitMqCommServer(CommServer):
 
         endpoint = self._endpoints[endpoint_name]
 
-        http_response = getattr(
-                endpoint,
-                json_request.method
-        )(json_request.data, **values)
+        try:
+            http_response = getattr(
+                    endpoint,
+                    json_request.method
+            )(json_request.get_http(), **values)
+
+        except NotImplementedError:
+            return self.method_not_allowed()
 
         return http_response
 

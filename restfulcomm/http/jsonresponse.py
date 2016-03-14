@@ -7,6 +7,7 @@ import json
 
 from restfulcomm.http.superjson import BaseJson
 from restfulcomm.core.helpers import HttpHelper
+from requests.models import Response
 
 
 class JsonResponse(BaseJson):
@@ -90,7 +91,7 @@ class JsonResponse(BaseJson):
         return json_response
 
     @classmethod
-    def http_factory(cls, response):
+    def http_factory(cls, response: Response):
         """Return a JsonResponse object by the given HTTP Response
 
         Args:
@@ -101,8 +102,8 @@ class JsonResponse(BaseJson):
         """
         json_response = JsonResponse()
 
-        if HttpHelper.is_plain_content_type(response.headers['Content-type']):
-            json_response.body = response.text
+        if response.encoding:
+            json_response.body = response.content.decode(response.encoding)
         else:
             json_response.body = response.content
 

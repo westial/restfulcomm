@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Example command for parameters printing"""
+"""Example endpoint for parameters printing"""
 from restfulcomm.http.superendpoint import Endpoint
 from werkzeug.wrappers import Response
 
@@ -7,20 +7,10 @@ from werkzeug.wrappers import Response
 class SuccessEndpoint(Endpoint):
 
     @classmethod
-    def PUT(cls, data, **kwargs):
-        pass
-
-    @classmethod
-    def GET(cls, data, content):
+    def GET(cls, request, **kwargs):
+        content = kwargs['content']
         return Response(
             response=content,
             content_type='text/plain'
         )
 
-    @classmethod
-    def POST(cls, data, **kwargs):
-        pass
-
-    @classmethod
-    def DELETE(cls, data, **kwargs):
-        pass

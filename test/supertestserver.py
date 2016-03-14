@@ -11,6 +11,7 @@ import time
 
 from restfulcomm.resources.basicserverresource import BasicServerResource
 from test.examplelib.imageendpoint import ImageEndpoint
+from test.examplelib.modelendpoint import ModelEndpoint
 from test.examplelib.successendpoint import SuccessEndpoint
 
 
@@ -41,12 +42,86 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         endpoints_context = [
             (SuccessEndpoint, '/index/<content>'),
             (ImageEndpoint, '/python.jpg'),
+            (ModelEndpoint, '/user/<item_id>'),
         ]
         cls.start_server(endpoints_context)
 
     @classmethod
     def tearDownClass(cls):
         cls.reset_server()
+
+    def test_delete(self):
+        """Client requests a delete request on item creation"""
+        self.headers_for_get.update({'Content-type': 'application/x-www-form-urlencoded'})
+
+        client_provider = self.build_client_provider()
+
+        json_response = client_provider.client.do_request(
+                method='DELETE',
+                resource='/user/1',
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.status, 204, msg='No Content response')
+
+        json_response = client_provider.client.do_request(
+                method='GET',
+                resource='/user/1',
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.status, 404, msg='Not Found response')
+
+    def test_put(self):
+        """Client requests a put request on item creation"""
+        self.headers_for_get.update({'Content-type': 'application/x-www-form-urlencoded'})
+
+        changed_name = 'Changed Name'
+
+        client_provider = self.build_client_provider()
+
+        json_response = client_provider.client.do_request(
+                method='PUT',
+                data={'name': changed_name},
+                resource='/user/1',
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.status, 204, msg='No Content response')
+
+        json_response = client_provider.client.do_request(
+                method='GET',
+                resource='/user/1',
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.body, changed_name, msg='Checked body')
+
+    def test_post(self):
+        """Client requests a post request on item creation"""
+        self.headers_for_get.update({'Content-type': 'application/x-www-form-urlencoded'})
+
+        new_item_name = 'Bill Punch'
+
+        client_provider = self.build_client_provider()
+
+        json_response = client_provider.client.do_request(
+                method='POST',
+                data={'name': new_item_name},
+                resource='/user/1',
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.status, 201, msg='Created response')
+
+        json_response = client_provider.client.do_request(
+                method='GET',
+                resource='/user/4',
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.status, 200, msg='Retrieved by get')
+        self.assertEqual(json_response.body, new_item_name, msg='Checked body')
 
     def test_get(self):
         """Client requests a simple message and server returns the message as

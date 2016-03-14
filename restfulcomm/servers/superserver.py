@@ -54,3 +54,10 @@ class CommServer(metaclass=ABCMeta):
         :return: HTTP Response
         """
         return Response('Not Found', status=404)
+
+    @classmethod
+    def method_not_allowed(cls):
+        """Returns a method not allowed http response
+        :return: HTTP Response
+        """
+        return Response('Method not allowed', status=405)

@@ -2,7 +2,7 @@
 """A simple URL simple server using Werkzeug providing configuration and rules
 setting up by the constructor parameters.
 """
-
+from restfulcomm.http.jsonrequest import JsonRequest
 from restfulcomm.servers.superserver import CommServer
 from werkzeug.exceptions import NotFound
 from werkzeug.wrappers import Request
@@ -41,12 +41,40 @@ class WerkzeugCommServer(CommServer):
 
         endpoint = self._endpoints[endpoint_name]
 
-        http_response = getattr(
-                endpoint,
-                request.method
-        )(request.form, **values)
+        json_request = self._werkzeug_to_json_request(request)
+
+        try:
+            http_response = getattr(
+                    endpoint,
+                    request.method
+            )(json_request, **values)
+
+        except NotImplementedError:
+            return self.method_not_allowed()
 
         return http_response
+
+    @classmethod
+    def _werkzeug_to_json_request(cls, request: Request):
+        """Return a JsonRequest for the given werkzeug Request
+
+        :param request: Request
+        :return JsonRequest
+        """
+        json_request = JsonRequest()
+        json_request = JsonRequest.decompose_url(request.url, json_request)
+        json_request.data = request.form
+        json_request.method = request.method
+        json_request.scheme = request.scheme
+        json_request.params = request.args
+
+        if request.headers:
+            json_request.headers = dict(request.headers)
+
+        if request.files:
+            json_request.files = list(request.files)
+
+        return json_request
 
     def listen(self):
         run_simple(

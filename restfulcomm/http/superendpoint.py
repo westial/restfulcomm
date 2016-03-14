@@ -1,39 +1,38 @@
 # -*- coding: utf-8 -*-
 """Super server endpoint class which defines an action for any request method.
 """
-from abc import ABCMeta, abstractmethod
 
 
-class Endpoint(metaclass=ABCMeta):
+class Endpoint(object):
 
     @classmethod
-    @abstractmethod
-    def GET(cls, *args, **kwargs):
+    def GET(cls, request, **kwargs):
         """GET method request
-        :return JsonResponse object
+        :param request: Request
+        :return Response object
         """
-        pass
+        raise NotImplementedError()
 
     @classmethod
-    @abstractmethod
-    def POST(cls, *args, **kwargs):
+    def POST(cls, request, **kwargs):
         """POST method request
-        :return JsonResponse object
+        :param request: Request
+        :return Response object
         """
-        pass
+        raise NotImplementedError()
 
     @classmethod
-    @abstractmethod
-    def PUT(cls, *args, **kwargs):
+    def PUT(cls, request, **kwargs):
         """PUT method request
-        :return JsonResponse object
+        :param request: Request
+        :return Response object
         """
-        pass
+        raise NotImplementedError()
 
     @classmethod
-    @abstractmethod
-    def DELETE(cls, *args, **kwargs):
+    def DELETE(cls, request, **kwargs):
         """DELETE method request
-        :return JsonResponse object
+        :param request: Request
+        :return Response object
         """
-        pass
+        raise NotImplementedError()
