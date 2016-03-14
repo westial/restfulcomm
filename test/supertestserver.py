@@ -58,7 +58,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
 
         json_response = client_provider.client.do_request(
                 method='DELETE',
-                resource='/user/1',
+                resource='/user/2',
                 headers=self.headers_for_get
         )
 
@@ -66,7 +66,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
 
         json_response = client_provider.client.do_request(
                 method='GET',
-                resource='/user/1',
+                resource='/user/2',
                 headers=self.headers_for_get
         )
 
@@ -108,7 +108,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         json_response = client_provider.client.do_request(
                 method='POST',
                 data={'name': new_item_name},
-                resource='/user/1',
+                resource='/user/4',
                 headers=self.headers_for_get
         )
 

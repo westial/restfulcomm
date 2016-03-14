@@ -72,7 +72,7 @@ class RabbitMqCommServer(CommServer):
             http_response = getattr(
                     endpoint,
                     json_request.method
-            )(json_request.get_http(), **values)
+            )(json_request, **values)
 
         except NotImplementedError:
             return self.method_not_allowed()
