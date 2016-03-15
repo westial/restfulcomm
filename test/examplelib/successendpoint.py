@@ -9,8 +9,5 @@ class SuccessEndpoint(Endpoint):
     @classmethod
     def GET(cls, request, **kwargs):
         content = kwargs['content']
-        return Response(
-            response=content,
-            content_type='text/plain'
-        )
+        return Response(content)
 

@@ -12,6 +12,15 @@ from test.supertestserver import SuperTestServer
 
 class TestRabbitMq(SuperTestServer):
 
+    def test_delete(self):
+        super().test_delete()
+
+    def test_post(self):
+        super().test_post()
+
+    def test_put(self):
+        super().test_put()
+
     def test_get_not_found(self):
         super().test_get_not_found()
 

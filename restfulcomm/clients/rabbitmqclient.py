@@ -21,6 +21,7 @@ class RabbitMqCommClient(CommClient):
         self._pika_props = None
         self._message = None
         self._start_time = None
+        self._channel = None
         self._timeout_sec = self._configuration.value('timeout')
 
         credentials = pika.PlainCredentials(
@@ -34,8 +35,6 @@ class RabbitMqCommClient(CommClient):
                     virtual_host=self._configuration.value('vhost'),
                     credentials=credentials)
         )
-
-        self._channel = self._connection.channel()
 
     @classmethod
     def validate_request(cls, headers):
@@ -55,6 +54,8 @@ class RabbitMqCommClient(CommClient):
             'headers': headers,
         }
 
+        self._channel = self._connection.channel()
+
         result = self._channel.queue_declare(exclusive=True)
         self._callback_queue = result.method.queue
 
@@ -72,6 +73,10 @@ class RabbitMqCommClient(CommClient):
         json_response = JsonResponse.plain_factory(plain_json_response)
 
         return json_response
+
+    def _clean_response(self):
+        """Clean response attribute preparing for next operations"""
+        self.response = None
 
     def on_response(self, ch, method, properties, body):
         if self._corr_id == properties.correlation_id:
@@ -100,6 +105,7 @@ class RabbitMqCommClient(CommClient):
                 and time.time() - self._start_time < self._timeout_sec:
             self._connection.process_data_events()
 
-        self._connection.close()
+        response = self.response
+        self._clean_response()
 
-        return self.response
+        return response

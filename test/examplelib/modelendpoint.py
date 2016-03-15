@@ -3,7 +3,6 @@
 from restfulcomm.http.jsonrequest import JsonRequest
 from restfulcomm.http.superendpoint import Endpoint
 from werkzeug.wrappers import Response
-from werkzeug.wrappers import Request
 
 
 class ModelEndpoint(Endpoint):
