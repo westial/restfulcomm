@@ -99,7 +99,11 @@ class WerkzeugCommServer(CommServer):
             endpoint_name = resource.endpoint_class.__name__
             self._endpoints[endpoint_name] = resource.endpoint_class
             self._url_map.add(
-                    Rule(resource.api_route, endpoint=endpoint_name)
+                    Rule(
+                        resource.api_route,
+                        endpoint=endpoint_name,
+                        defaults=resource.route_defaults
+                    )
             )
 
     def wsgi_app(self, environ, start_response):

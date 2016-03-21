@@ -42,6 +42,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         endpoints_context = [
             (SuccessEndpoint, '/index/<content>'),
             (ImageEndpoint, '/python.jpg'),
+            (ModelEndpoint, '/user', {'item_id': None}),
             (ModelEndpoint, '/user/<item_id>'),
         ]
         cls.start_server(endpoints_context)
@@ -108,7 +109,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         json_response = client_provider.client.do_request(
                 method='POST',
                 data={'name': new_item_name},
-                resource='/user/4',
+                resource='/user',
                 headers=self.headers_for_get
         )
 
@@ -202,13 +203,18 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
     @classmethod
     def endpoints_to_server_resources(cls, endpoints_context):
         server_resources = list()
+        route_defaults = None
 
         while len(endpoints_context):
             endpoint_context = endpoints_context.pop()
 
+            if len(endpoint_context) > 2:
+                route_defaults = endpoint_context[2]
+
             server_resource = BasicServerResource(
                 endpoint_context[0],
-                endpoint_context[1]
+                endpoint_context[1],
+                route_defaults
             )
 
             server_resources.append(server_resource)

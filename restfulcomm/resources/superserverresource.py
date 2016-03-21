@@ -16,6 +16,19 @@ class ServerResource(metaclass=ABCMeta):
         """
         self._endpoint_class = None
         self._api_route = None
+        self._route_defaults = None
+
+    @abstractproperty
+    def route_defaults(self):
+        return self._route_defaults
+
+    @route_defaults.setter
+    def route_defaults(self, values):
+        """
+        Args:
+            values: dict defaults for route
+        """
+        self._route_defaults = values
 
     @abstractproperty
     def endpoint_class(self):

@@ -32,10 +32,13 @@ class ModelEndpoint(Endpoint):
         )
 
     @classmethod
+    def _last_id(cls):
+        keys = sorted(cls.items.keys())
+        return int(keys[-1]) + 1
+
+    @classmethod
     def POST(cls, request: JsonRequest, **kwargs):
-        item_id = int(kwargs['item_id'])
-        if item_id in cls.items:
-            return Response('Not Found', status=409)
+        item_id = cls._last_id()
         cls.items[item_id] = request.data['name']
         return Response('CREATED', status=201)
 
