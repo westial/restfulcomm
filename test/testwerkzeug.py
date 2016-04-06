@@ -19,6 +19,9 @@ class TestWerkzeug(SuperTestServer):
     def test_post(self):
         super().test_post()
 
+    def test_post_json(self):
+        super().test_post_json()
+
     def test_put(self):
         super().test_put()
 

@@ -53,7 +53,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
 
     def test_delete(self):
         """Client requests a delete request on item creation"""
-        self.headers_for_get.update({'Content-type': 'application/x-www-form-urlencoded'})
+        self.headers_for_get.update({'Content-Type': 'application/x-www-form-urlencoded'})
 
         client_provider = self.build_client_provider()
 
@@ -75,7 +75,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
 
     def test_put(self):
         """Client requests a put request on item creation"""
-        self.headers_for_get.update({'Content-type': 'application/x-www-form-urlencoded'})
+        self.headers_for_get.update({'Content-Type': 'application/x-www-form-urlencoded'})
 
         changed_name = 'Changed Name'
 
@@ -99,8 +99,16 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         self.assertEqual(json_response.body, changed_name, msg='Checked body')
 
     def test_post(self):
+        content_type = 'application/x-www-form-urlencoded'
+        self.post_by_content_type(content_type)
+
+    def test_post_json(self):
+        content_type = 'application/json'
+        self.post_by_content_type(content_type)
+
+    def post_by_content_type(self, content_type):
         """Client requests a post request on item creation"""
-        self.headers_for_get.update({'Content-type': 'application/x-www-form-urlencoded'})
+        self.headers_for_get.update({'Content-Type': content_type})
 
         new_item_name = 'Bill Punch'
 
@@ -115,6 +123,10 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
 
         self.assertEqual(json_response.status, 201, msg='Created response')
 
+        self.headers_for_get.update(
+            {'Content-Type': 'application/x-www-form-urlencoded'}
+        )
+
         json_response = client_provider.client.do_request(
                 method='GET',
                 resource='/user/4',
@@ -128,7 +140,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         """Client requests a simple message and server returns the message as
          response"""
         message = self.message_for_get
-        self.headers_for_get.update({'Content-type': 'text/plain'})
+        self.headers_for_get.update({'Content-Type': 'text/plain'})
 
         client_provider = self.build_client_provider()
 
@@ -143,7 +155,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
 
     def test_get_not_found(self):
         """Client requests a route and server returns a not found status code"""
-        self.headers_for_get.update({'Content-type': 'text/plain'})
+        self.headers_for_get.update({'Content-Type': 'text/plain'})
 
         client_provider = self.build_client_provider()
 
@@ -159,7 +171,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         """Client requests the properly route and server returns a binary image
         file"""
         img_path = ImageEndpoint.publish_img_path()
-        self.headers_for_get.update({'Content-type': 'image/png'})
+        self.headers_for_get.update({'Content-Type': 'image/png'})
 
         with open(img_path, 'rb') as img_file:
             img_content = img_file.read()

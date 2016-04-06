@@ -2,6 +2,8 @@
 """A simple URL simple server using Werkzeug providing configuration and rules
 setting up by the constructor parameters.
 """
+import json
+
 from restfulcomm.http.jsonrequest import JsonRequest
 from restfulcomm.servers.superserver import CommServer
 from werkzeug.exceptions import NotFound
@@ -63,18 +65,35 @@ class WerkzeugCommServer(CommServer):
         """
         json_request = JsonRequest()
         json_request = JsonRequest.decompose_url(request.url, json_request)
-        json_request.data = request.form
         json_request.method = request.method
         json_request.scheme = request.scheme
         json_request.params = request.args
-
-        if request.headers:
-            json_request.headers = dict(request.headers)
+        json_request.headers = dict(request.headers)
 
         if request.files:
             json_request.files = list(request.files)
 
+        json_request.data = cls._extract_json(
+            json_request.headers['Content-Type'],
+            request
+        )
+
         return json_request
+
+    @classmethod
+    def _extract_json(cls, content_type, request):
+        """
+        Extract the form data for the json content type formatted requests.
+        :param content_type: str
+        :param request: Request
+        :return: dict
+        """
+        if content_type == 'application/json':
+            data = json.loads(request.data.decode('utf-8'))
+            data = data['json_data']
+        else:
+            data = request.form
+        return data
 
     def listen(self):
         run_simple(

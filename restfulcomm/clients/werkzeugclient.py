@@ -25,7 +25,7 @@ class WerkzeugCommClient(CommClient):
 
     @classmethod
     def validate_request(cls, headers):
-        if 'Content-type' not in headers:
+        if 'Content-Type' not in headers:
             raise ValueError('Content type header is mandatory')
 
     def do_request(self, method, resource, headers, data=None, params=None):

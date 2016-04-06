@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 """HTTP Requests service"""
+import json
 
 import requests
 from restfulcomm.services.superbaseservice import BaseService
@@ -44,6 +45,8 @@ class HttpRequestService(BaseService):
             resource
         )
 
+        data = cls._encapsulate_json(headers['Content-Type'], data=data)
+
         if method.upper() == 'POST':
             response = cls._request_post(
                 route,
@@ -82,6 +85,18 @@ class HttpRequestService(BaseService):
             raise ValueError('Unexpected method {!s}'.format(method))
 
         return response
+
+    @classmethod
+    def _encapsulate_json(cls, content_type, data):
+        """Converts a content type json formatted data to an encapsulated
+        content supported by the http server response parser.
+        :param content_type: str
+        :param data: mixed
+        :return mixed
+        """
+        if data and content_type == 'application/json':
+            data = json.dumps({'json_data': data})
+        return data
 
     @classmethod
     def _request_post(cls, route, data, params, timeout, headers, auth):
