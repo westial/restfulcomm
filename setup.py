@@ -16,5 +16,10 @@ setup(
     author_email='jaume@westial.com',
     description='Client and a server to manage a RESTful-like communication '
                 'allowing to switch the medium between RabbitMQ and HTTP '
-                'Werkzeug.'
+                'Werkzeug.',
+    install_requires=[
+        'werkzeug',
+        'pika',
+        'requests'
+    ]
 )
