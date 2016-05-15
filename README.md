@@ -1,10 +1,7 @@
 # restfulcomm #
 
-Client and a server to manage a RESTful-like communication allowing to 
-switch the medium between RabbitMQ and HTTP Werkzeug.
-
-RabbitMQ and HTTP Werkzeug client and server implement an abstract class
-and are limited by its contracts.
+RESTful-like communication Client and a server allowing to 
+use RabbitMQ or HTTP Werkzeug alternatively.
 
 ## Requirements ##
 
@@ -26,19 +23,18 @@ and are limited by its contracts.
 ## Usage ##
 
 Check the /test directory, there are some functional test cases which
-can help you for implementation.
+can help your implementation.
 
 ## Example of use ##
 
-You are developing an application with multiple components. Some 
-components need to connect remotely and exchange data. So you need
-a client in one side and a server in the other, even you may need a
-server and a client twice for both directions. 
+You are developing an application with multiple remote components. 
+Some components need to exchange data. So you need a server to 
+server communicaton, at least one client and/or one
+server for each node.
 
-Implement this provided client and server and no matters if on begin 
-you use RabbitMQ queues for messaging and after you want to switch to 
-an HTTP API. Switching between them is so easy as configure the client
-and server in both sides.
+Implement this client and server and no matters if on begin you 
+are using RabbitMQ for messaging and after you want to switch to 
+an HTTP API. You can do easily.
 
 ## License ##
 
