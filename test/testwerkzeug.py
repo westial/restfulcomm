@@ -31,6 +31,9 @@ class TestWerkzeug(SuperTestServer):
     def test_get(self):
         super().test_get()
 
+    def test_get_params(self):
+        super().test_get_params()
+
     def test_get_image(self):
         super().test_get_image()
 

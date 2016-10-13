@@ -32,6 +32,7 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
             cls.__server = server
 
     def setUp(self):
+        ModelEndpoint.items = ModelEndpoint.items_original.copy()
         self._server = None
         self.message_for_get = 'This is my print response example message'
         self.resource_pattern_for_get = '/index/{!s}'
@@ -147,6 +148,24 @@ class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):
         json_response = client_provider.client.do_request(
                 method='GET',
                 resource=self.resource_pattern_for_get.format(message),
+                headers=self.headers_for_get
+        )
+
+        self.assertEqual(json_response.status, 200)
+        self.assertEqual(json_response.body, message)
+
+    def test_get_params(self):
+        """Client requests an item by item_id sent through query params and
+        server returns the item content as response"""
+        message = 'Paco Pena'
+        self.headers_for_get.update({'Content-Type': 'text/plain'})
+
+        client_provider = self.build_client_provider()
+
+        json_response = client_provider.client.do_request(
+                method='GET',
+                resource='/user',
+                params={'item_id': '3'},
                 headers=self.headers_for_get
         )
 

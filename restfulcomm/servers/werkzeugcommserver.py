@@ -67,7 +67,7 @@ class WerkzeugCommServer(CommServer):
         json_request = JsonRequest.decompose_url(request.url, json_request)
         json_request.method = request.method
         json_request.scheme = request.scheme
-        json_request.params = request.args
+        json_request.params = JsonRequest.build_params(request.args)
         json_request.headers = dict(request.headers)
 
         if request.files:

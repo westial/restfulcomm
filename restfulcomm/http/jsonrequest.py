@@ -76,6 +76,9 @@ class JsonRequest(BaseJson):
         if 'headers' in json_map:
             json_request.headers = json_map['headers']
 
+        if 'params' in json_map:
+            json_request.params = json_map['params']
+
         if 'data' in json_map:
             json_request.data = json_map['data']
 
@@ -110,3 +113,15 @@ class JsonRequest(BaseJson):
         if request.files:
             json_request.files = list(request.files)
 
+    @classmethod
+    def build_params(cls, immutable_dict):
+        """
+        :param immutable_dict:
+        :return: dict|None
+        """
+        if not immutable_dict:
+            return None
+        items = dict()
+        for param in immutable_dict:
+            items.update({param: immutable_dict[param]})
+        return items

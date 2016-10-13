@@ -1,7 +1,6 @@
 # restfulcomm #
 
-RESTful-like communication Client and a server allowing to 
-use RabbitMQ or HTTP Werkzeug alternatively.
+RESTful-like Server and Clients with RabbitMQ and HTTP Werkzeug support.
 
 ## Requirements ##
 
@@ -25,16 +24,17 @@ use RabbitMQ or HTTP Werkzeug alternatively.
 Check the /test directory, there are some functional test cases which
 can help your implementation.
 
-## Example of use ##
+## Why you would need that component ##
 
-You are developing an application with multiple remote components. 
-Some components need to exchange data. So you need a server to 
-server communicaton, at least one client and/or one
-server for each node.
+For example, your project is a microservices based application. The 
+nodes are requesting the services through RESTful HTTP interfaces. May 
+be somewhere is more appropriate a RabbitMQ based communication, and
+you would have to program its interfaces and clients...
 
-Implement this client and server and no matters if on begin you 
-are using RabbitMQ for messaging and after you want to switch to 
-an HTTP API. You can do easily.
+Implement this restfulcomm client and server in your interfaces and
+let this communication infrastructure do the job. No matters if you 
+start using RabbitMQ for messaging and after you want to switch to 
+an HTTP API.
 
 ## License ##
 
