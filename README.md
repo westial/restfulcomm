@@ -36,6 +36,146 @@ let this communication infrastructure do the job. No matters if you
 start using RabbitMQ for messaging and after you want to switch to 
 an HTTP API.
 
+## Full example ##
+
+Basic example source code for context with both servers, HTTP and RMQ,
+both clients and a request example script to make it easy. I don't
+trust that the following works, see the test directory examples for 
+full working examples.
+
+### endpoint.py ###
+
+Define an endpoint. Available for both HTTP and RMQ clients.
+
+```
+from restfulcomm.http.superendpoint import Endpoint
+from restfulcomm.resources.basicserverresource import BasicServerResource
+from werkzeug.wrappers import Response
+
+
+class BounceEndpoint(Endpoint):
+
+    @classmethod
+    def GET(cls, request, **kwargs):
+    """Bounce content"""
+        content = kwargs['content']
+        return Response(content)
+        
+bounce_endpoint_resource = BasicServerResource(
+    BounceEndpoint,
+    '/index/<content>',
+    route_defaults
+)
+```
+
+### http_server.py ###
+
+Configure the HTTP server properties, attach the endpoint and start 
+listening.
+
+```
+from endpoint import bounce_endpoint_resource
+
+configuration = WerkzeugServerConfig(
+    web_user=None,
+    web_password=None,
+    web_server='127.0.0.1',
+    web_port=5000,
+    use_debugger=True,
+    use_reloader=False
+)
+
+server_provider = ServerProvider(
+        'werkzeug',
+        [bounce_endpoint_resource],
+        configuration
+)
+
+cls.set_server(server_provider.server)
+cls._server().listen()
+```
+
+### rabbitmq_server.py ###
+
+Configure the RMQ server properties, attach the endpoint and start 
+listening.
+
+```
+configuration = RabbitMqServerConfig(
+        rmq_user='guest',
+        rmq_password='password',
+        rmq_server='127.0.0.1',
+        rmq_vhost='/',
+        rmq_queue='sample',
+        rmq_prefetch=1,
+        rmq_exchange=''
+)
+
+server_provider = ServerProvider(
+        'rabbitmq',
+        [bounce_endpoint_resource],
+        configuration
+)
+
+cls.set_server(server_provider.server)
+cls._server().listen()
+```
+
+### http_client.py ###
+
+At this point, if the HTTP server above is listening, we can use 
+this HTTP client to write from any node to the HTTP server.
+
+```
+configuration = WerkzeugClientConfig(
+        web_user=None,
+        web_password=None,
+        web_scheme='http',
+        web_server='127.0.0.1',
+        web_port=5000,
+        web_timeout=30
+)
+
+provider = ClientProvider('werkzeug', configuration)
+
+http_client = provider.client
+```
+
+### rabbitmq_client.py ###
+
+Same thing for RabbitMQ: if the RMQ server above is listening, this
+RMQ client below writes from any node to the RMQ server.
+
+```
+configuration = RabbitMqClientConfig(
+        rmq_user='guest',
+        rmq_password='password',
+        rmq_server='127.0.0.1',
+        rmq_vhost='/',
+        rmq_queue='sample',
+        rmq_delivery=2,
+        rmq_exchange='',
+        rmq_timeout=60
+)
+provider = ClientProvider('rabbitmq', configuration)
+
+rabbit_client = provider.client
+```
+
+### request_example.py ###
+
+```
+# The request below works for both clients, HTTP and RMQ. 
+# import the appropriate client and request to the endpoint.
+
+json_response = any_client.do_request(
+        method='GET',
+        resource='/index/bouncing-content'
+)
+
+assert json_response.status == 200
+```
+
 ## License ##
 
 This program is free software: you can redistribute it and/or modify
