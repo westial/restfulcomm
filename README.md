@@ -39,9 +39,7 @@ an HTTP API.
 ## Full example ##
 
 Basic example source code for context with both servers, HTTP and RMQ,
-both clients and a request example script to make it easy. I don't
-trust that the following works, see the test directory examples for 
-full working examples.
+both clients and a request example script to make it easy.
 
 ### endpoint.py ###
 
