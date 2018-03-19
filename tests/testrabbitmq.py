@@ -6,8 +6,8 @@ from restfulcomm.configurations.rabbitmqclientconfig import RabbitMqClientConfig
 from restfulcomm.configurations.rabbitmqserverconfig import RabbitMqServerConfig
 from restfulcomm.providers.clientprovider import ClientProvider
 from restfulcomm.providers.serverprovider import ServerProvider
-from test.examplesettings.rabbitmq import *
-from test.supertestserver import SuperTestServer
+from tests.examplesettings.rabbitmq import *
+from tests.supertestserver import SuperTestServer
 
 
 class TestRabbitMq(SuperTestServer):

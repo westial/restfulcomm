@@ -14,6 +14,9 @@ from werkzeug.routing import Map, Rule
 class RabbitMqCommServer(CommServer):
     """CommServer for RabbitMQ server"""
 
+    def is_listening(self):
+        return self._connection and not self._connection.is_closed
+
     def __init__(self, server_resources, configuration):
         super().__init__(server_resources, configuration)
 

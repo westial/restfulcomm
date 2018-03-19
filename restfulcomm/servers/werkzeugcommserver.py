@@ -14,6 +14,9 @@ from werkzeug.serving import run_simple
 
 class WerkzeugCommServer(CommServer):
 
+    def is_listening(self):
+        return self._is_listening
+
     def __init__(self, server_resources, configuration):
         super().__init__(server_resources, configuration)
 
@@ -23,6 +26,8 @@ class WerkzeugCommServer(CommServer):
         self._create_rules()
 
         self._environ = None
+
+        self._is_listening = True
 
     def _dispatch_request(self, request):
         """Dispatches request and returns the response

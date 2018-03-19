@@ -10,9 +10,9 @@ from abc import ABCMeta, abstractmethod
 import time
 
 from restfulcomm.resources.basicserverresource import BasicServerResource
-from test.examplelib.imageendpoint import ImageEndpoint
-from test.examplelib.modelendpoint import ModelEndpoint
-from test.examplelib.successendpoint import SuccessEndpoint
+from tests.examplelib.imageendpoint import ImageEndpoint
+from tests.examplelib.modelendpoint import ModelEndpoint
+from tests.examplelib.successendpoint import SuccessEndpoint
 
 
 class SuperTestServer(unittest.TestCase, metaclass=ABCMeta):

@@ -32,6 +32,10 @@ class CommServer(metaclass=ABCMeta):
         pass
 
     @abstractmethod
+    def is_listening(self):
+        pass
+
+    @abstractmethod
     def listen(self):
         """Request the given content to server and return the response"""
         pass

@@ -24,11 +24,13 @@ class RabbitMqCommClient(CommClient):
         self._channel = None
         self._timeout_sec = self._configuration.value('timeout')
 
+        self.__connect()
+
+    def __connect(self):
         credentials = pika.PlainCredentials(
                 self._configuration.value('user'),
                 self._configuration.value('password')
         )
-
         self._connection = pika.BlockingConnection(
             pika.ConnectionParameters(
                     host=self._configuration.value('server'),
@@ -42,6 +44,12 @@ class RabbitMqCommClient(CommClient):
             raise ValueError('Content type header is mandatory')
 
     def do_request(self, method, resource, headers, data=None, params=None):
+        if self._connection.is_closed:
+            self.__connect()
+
+        return self.__request(method, resource, headers, data, params)
+
+    def __request(self, method, resource, headers, data=None, params=None):
         self.validate_request(headers=headers)
 
         self._corr_id = str(uuid.uuid4())
@@ -68,6 +76,7 @@ class RabbitMqCommClient(CommClient):
                 correlation_id=self._corr_id,
                 content_type='application/json'
         )
+
         plain_json_response = self.enqueue(message=self._message)
 
         json_response = JsonResponse.plain_factory(plain_json_response)

@@ -2,7 +2,7 @@
 """Example endpoint for image downloading"""
 from restfulcomm.http.superendpoint import Endpoint
 from werkzeug.wrappers import Response
-from test.examplesettings.globals import TEST_ROOT_PATH
+from tests.examplesettings.globals import TEST_ROOT_PATH
 
 
 class ImageEndpoint(Endpoint):

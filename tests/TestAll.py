@@ -5,8 +5,8 @@ import sys
 import unittest
 
 sys.path.append('..')
-from test.testrabbitmq import TestRabbitMq
-from test.testwerkzeug import TestWerkzeug
+from tests.testrabbitmq import TestRabbitMq
+from tests.testwerkzeug import TestWerkzeug
 
 testrabbitmq = unittest.makeSuite(TestRabbitMq, 'test')
 testwerkzeug = unittest.makeSuite(TestWerkzeug, 'test')

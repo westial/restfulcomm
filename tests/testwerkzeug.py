@@ -7,8 +7,8 @@ from restfulcomm.configurations.werkzeugclientconfig import WerkzeugClientConfig
 from restfulcomm.configurations.werkzeugserverconfig import WerkzeugServerConfig
 from restfulcomm.providers.clientprovider import ClientProvider
 from restfulcomm.providers.serverprovider import ServerProvider
-from test.examplesettings.werkzeug import *
-from test.supertestserver import SuperTestServer
+from tests.examplesettings.werkzeug import *
+from tests.supertestserver import SuperTestServer
 
 
 class TestWerkzeug(SuperTestServer):
