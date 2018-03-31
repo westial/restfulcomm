@@ -5,6 +5,8 @@ import time
 import uuid
 
 import pika
+from pika.exceptions import ConnectionClosed
+
 from restfulcomm.clients.superclient import CommClient
 from restfulcomm.http.jsonresponse import JsonResponse
 
@@ -44,12 +46,6 @@ class RabbitMqCommClient(CommClient):
             raise ValueError('Content type header is mandatory')
 
     def do_request(self, method, resource, headers, data=None, params=None):
-        if self._connection.is_closed:
-            self.__connect()
-
-        return self.__request(method, resource, headers, data, params)
-
-    def __request(self, method, resource, headers, data=None, params=None):
         self.validate_request(headers=headers)
 
         self._corr_id = str(uuid.uuid4())
@@ -62,7 +58,11 @@ class RabbitMqCommClient(CommClient):
             'headers': headers,
         }
 
-        self._channel = self._connection.channel()
+        try:
+            self._channel = self._connection.channel()
+        except ConnectionClosed:
+            self.__connect()
+            self._channel = self._connection.channel()
 
         result = self._channel.queue_declare(exclusive=True)
         self._callback_queue = result.method.queue
